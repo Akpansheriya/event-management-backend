@@ -298,10 +298,14 @@ const adminSignIn = async (req, res) => {
           error: err,
         });
       } else {
-        res.status(200).send({
-          result: result,
-          admin: exist,
-        });
+        if(result === true){
+          res.status(200).send({
+            result:result,
+            admin:exist
+          })
+         }else{
+          res.status(400).send("password is wrong")
+         }
       }
     });
   } else {

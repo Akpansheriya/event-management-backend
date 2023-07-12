@@ -299,10 +299,14 @@ const signIn = async (req, res) => {
           error: err,
         });
       } else {
+       if(result === true){
         res.status(200).send({
-          result: result,
-          user: exist,
-        });
+          result:result,
+          user:exist
+        })
+       }else{
+        res.status(400).send("password is wrong")
+       }
       }
     });
   } else {
