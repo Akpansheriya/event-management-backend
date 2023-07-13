@@ -5,6 +5,10 @@ const eventModel = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     require: true,
   },
+  creator:{
+    type:String,
+    require:true
+  },
   eventName: {
     type: String,
     require: true,

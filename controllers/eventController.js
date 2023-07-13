@@ -11,6 +11,7 @@ const createEvent = async (req, res) => {
   } else {
     const eventData = new event({
       adminId: exist._id,
+      creator:exist.firstName + exist.lastName,
       eventName: req.body.eventName,
       location: req.body.location,
       image: req.protocol + "://" + req.get("host") +`/profile/${req.file.filename}`,
