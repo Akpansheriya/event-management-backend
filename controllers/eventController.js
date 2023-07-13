@@ -1,6 +1,6 @@
 
 const admin = require("../models/admin");
-const event = require("../models/event");
+const event = require("../models/event")
 const excel4node = require("excel4node");
 
 const createEvent = async (req, res) => {
@@ -13,16 +13,12 @@ const createEvent = async (req, res) => {
       adminId: exist._id,
       eventName: req.body.eventName,
       location: req.body.location,
-      image:
-        req.protocol +
-        "://" +
-        req.get("host") +
-        `/profile/${req.file.filename}`,
+      image: req.protocol + "://" + req.get("host") +`/profile/${req.file.filename}`,
       startDate: new Date(),
       endDate: new Date(),
     });
-    const event = await eventData.save();
-    res.status(200).send(event);
+    const eventsFile = await eventData.save();
+    res.status(200).send(eventsFile);
   }
 };
 
