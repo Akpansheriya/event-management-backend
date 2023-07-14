@@ -327,14 +327,14 @@ const verifyUser = async (req, res) => {
         },
         process.env.JWT_KEY,
         {
-          expiresIn: "5m",
+          expiresIn: 60 * 5,
         }
       );
 
       var mailoption = {
-        from: "ebook Management",
+        from: "Event Management",
         to: users.email,
-        subject: "ebook - Reset You Password",
+        subject: "Event Management - Reset You Password",
         html: `
          
           
@@ -342,7 +342,7 @@ const verifyUser = async (req, res) => {
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>E-Book</title>
+<title>Event Management</title>
 </head>
 
 <body leftmargin="0" marginwidth="0" topmargin="0" marginheight="0" offset="0"
@@ -523,238 +523,240 @@ const resetLink = async (req, res, next) => {
   try {
     let id = req.query.id;
 
-    const users = await user
+   const doc =  await user
       .findOne({ passToken: req.query.token })
-      .then((result) => {
-        console.log("result", result);
-        if (result.passToken === req.query.token) {
+      
+     
+        console.log("result", doc);
+        if (doc) {
           user.findOne({
             passToken: req.query.token,
           
           }).then((result) => {
             result.passToken = null 
             result.save()
-          })
-
-          res.send(
-            `
-          <html lang="en">
-          <head>
-            <meta charset="UTF-8" />
-            <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-            <title>E-Book</title>
-           <!-- Tailwind-CSS CDN  -->
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/1.4.6/tailwind.min.css" />
-          </head>
-          <style>
-body{
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  flex-direction:column;
-}
-h2{
-  font-weight:700;
-  font-size:45px;
-  margin-top:20px;
-  text-align: center;
-}
-h4{
-  font-weight:700;
-  font-size:22px;
-  margin-top:20px;
-  color:white;
-  text-align:center;
-}
-          input[type=submit] {
-            background-color: #04AA6D;
-            color: white;
-          }
-          
-          input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-            margin-top: 6px;
-            margin-bottom: 16px;
-          }
-          .container {
-            background-color: #f1f1f1;
-            padding: 20px;
-            width:30%;
-            margin-top:30px;
-          }
-          
-          @media (max-width: 480px) {
-           .container{
-            width:80%;
+            res.send(
+              `
+            <html lang="en">
+            <head>
+              <meta charset="UTF-8" />
+              <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+              <title>Event Management</title>
+             <!-- Tailwind-CSS CDN  -->
+          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/1.4.6/tailwind.min.css" />
+            </head>
+            <style>
+  body{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+  }
+  h2{
+    font-weight:700;
+    font-size:45px;
+    margin-top:20px;
+    text-align: center;
+  }
+  h4{
+    font-weight:700;
+    font-size:22px;
+    margin-top:20px;
+    color:white;
+    text-align:center;
+  }
+            input[type=submit] {
+              background-color: #04AA6D;
+              color: white;
             }
-            #message p {
-                font-size: 18px !important;
-                padding:0 !important;
+            
+            input {
+              width: 100%;
+              padding: 12px;
+              border: 1px solid #ccc;
+              border-radius: 4px;
+              box-sizing: border-box;
+              margin-top: 6px;
+              margin-bottom: 16px;
             }
+            .container {
+              background-color: #f1f1f1;
+              padding: 20px;
+              width:30%;
+              margin-top:30px;
+            }
+            
+            @media (max-width: 480px) {
+             .container{
+              width:80%;
+              }
+              #message p {
+                  font-size: 18px !important;
+                  padding:0 !important;
+              }
+          }
+  
+          @media (min-width: 481px) and (max-width: 767px) {
+            .container{
+              width:60%;
+              }
         }
-
-        @media (min-width: 481px) and (max-width: 767px) {
+  
+        @media (min-width: 768px) and (max-width: 1024px){
           .container{
             width:60%;
             }
       }
-
-      @media (min-width: 768px) and (max-width: 1024px){
-        .container{
-          width:60%;
-          }
-    }
-
-          #message {
-            display:none;
-            background: #f1f1f1;
-            color: #000;
-            position: relative;
-            padding: 20px;
-            margin-top: 10px;
-          }
-          
-          #message p {
-            padding: 10px 35px;
-            font-size: 18px;
-          }
-          
-
-          .valid {
-            color: green;
-          }
-          
-          .valid:before {
-            position: relative;
-            left: -20px;
-            content: "✔";
-          }
-          
-         
-          .invalid {
-            color: red;
-          }
-          
-          .invalid:before {
-            position: relative;
-            left: -20px;
-            content: "✖";
-          }
-          </style>
-          <body class="bg-blue-500" >
-          <h4>please do not refresh this page till process is not complete
-          <h2>E-Book </h2>
-            <div class="container mx-auto p-2">
-             
-                <div class="text-center mb-8">
-                  <h1 class="font-bold text-2xl font-bold">Reset your Password</h1>
-                </div>
-                <form action="http://${req.headers.host}/api/setpassword/${id}" method="post">
-                  <div class="mt-5">
-                    
-                   
-    <label for="psw">Password</label>
-    <input type="password" id="psw" name="password"  pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-]).{8,16}$" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters" required>
-                  <div class="mt-10">
-                    <input
-                      type="submit"
-                      value="Submit"
-                      class="py-3 mt-0 bg-green-500 hover:bg-green-600 rounded text-white text-center w-full"
-                    />
+  
+            #message {
+              display:none;
+              background: #f1f1f1;
+              color: #000;
+              position: relative;
+              padding: 20px;
+              margin-top: 10px;
+            }
+            
+            #message p {
+              padding: 10px 35px;
+              font-size: 18px;
+            }
+            
+  
+            .valid {
+              color: green;
+            }
+            
+            .valid:before {
+              position: relative;
+              left: -20px;
+              content: "✔";
+            }
+            
+           
+            .invalid {
+              color: red;
+            }
+            
+            .invalid:before {
+              position: relative;
+              left: -20px;
+              content: "✖";
+            }
+            </style>
+            <body class="bg-blue-500" >
+            <h4>please do not refresh this page till process is not complete
+            <h2>Event Management</h2>
+              <div class="container mx-auto p-2">
+               
+                  <div class="text-center mb-8">
+                    <h1 class="font-bold text-2xl font-bold">Reset your Password</h1>
                   </div>
-                </form>
-                <div id="message">
-  <h3>Password must contain the following:</h3>
-  <p id="symbol" class="invalid">Minimum <b>1 symbol</b></p>
-    <p id="letter" class="invalid">A <b>lowercase</b> letter</p>
-<p id="capital" class="invalid">A <b>capital (uppercase)</b> letter</p>
-<p id="number" class="invalid">A <b>number</b></p>
-<p id="length" class="invalid">Minimum <b>8 characters</b></p>
-
-            </div>
+                  <form action="http://${req.headers.host}/api/setpassword/${id}" method="post">
+                    <div class="mt-5">
+                      
+                     
+      <label for="psw">Password</label>
+      <input type="password" id="psw" name="password"  pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-]).{8,16}$" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters" required>
+                    <div class="mt-10">
+                      <input
+                        type="submit"
+                        value="Submit"
+                        class="py-3 mt-0 bg-green-500 hover:bg-green-600 rounded text-white text-center w-full"
+                      />
+                    </div>
+                  </form>
+                  <div id="message">
+    <h3>Password must contain the following:</h3>
+    <p id="symbol" class="invalid">Minimum <b>1 symbol</b></p>
+      <p id="letter" class="invalid">A <b>lowercase</b> letter</p>
+  <p id="capital" class="invalid">A <b>capital (uppercase)</b> letter</p>
+  <p id="number" class="invalid">A <b>number</b></p>
+  <p id="length" class="invalid">Minimum <b>8 characters</b></p>
+  
+              </div>
+            
+  
+              <script>
+            
+  var myInput = document.getElementById("psw");
+  var letter = document.getElementById("letter");
+  var capital = document.getElementById("capital");
+  var number = document.getElementById("number");
+  var length = document.getElementById("length");
+  var symbol = document.getElementById("symbol"); 
+  
+  myInput.onfocus = function() {
+    document.getElementById("message").style.display = "block";
+  }
+  
+  
+  myInput.onblur = function() {
+    document.getElementById("message").style.display = "none";
+  }
+  
+  
+  myInput.onkeyup = function() {
+    
+    var symbols = /[!@#$%^&*_=+-]/g;
+    if(myInput.value.match(symbols)) {
+      symbol.classList.remove("invalid");
+      symbol.classList.add("valid");
+    } else {
+      symbol.classList.remove("valid");
+      symbol.classList.add("invalid");
+    }
+  
+    var lowerCaseLetters = /[a-z]/g;
+    if(myInput.value.match(lowerCaseLetters)) {
+      letter.classList.remove("invalid");
+      letter.classList.add("valid");
+    } else {
+      letter.classList.remove("valid");
+      letter.classList.add("invalid");
+  }
+  
+    var upperCaseLetters = /[A-Z]/g;
+    if(myInput.value.match(upperCaseLetters)) {
+      capital.classList.remove("invalid");
+      capital.classList.add("valid");
+    } else {
+      capital.classList.remove("valid");
+      capital.classList.add("invalid");
+    }
+  
+    var numbers = /[0-9]/g;
+    if(myInput.value.match(numbers)) {
+      number.classList.remove("invalid");
+      number.classList.add("valid");
+    } else {
+      number.classList.remove("valid");
+      number.classList.add("invalid");
+    }
+    if(myInput.value.length >= 8) {
+      length.classList.remove("invalid");
+      length.classList.add("valid");
+    } else {
+      length.classList.remove("valid");
+      length.classList.add("invalid");
+    }
+    
+  
+    
+  }
+  
+  
+  
+  
+  </script>
+            </body>
+          </html>
           
+         `
+            );
+          })
 
-            <script>
           
-var myInput = document.getElementById("psw");
-var letter = document.getElementById("letter");
-var capital = document.getElementById("capital");
-var number = document.getElementById("number");
-var length = document.getElementById("length");
-var symbol = document.getElementById("symbol"); 
-
-myInput.onfocus = function() {
-  document.getElementById("message").style.display = "block";
-}
-
-
-myInput.onblur = function() {
-  document.getElementById("message").style.display = "none";
-}
-
-
-myInput.onkeyup = function() {
-  
-  var symbols = /[!@#$%^&*_=+-]/g;
-  if(myInput.value.match(symbols)) {
-    symbol.classList.remove("invalid");
-    symbol.classList.add("valid");
-  } else {
-    symbol.classList.remove("valid");
-    symbol.classList.add("invalid");
-  }
-
-  var lowerCaseLetters = /[a-z]/g;
-  if(myInput.value.match(lowerCaseLetters)) {
-    letter.classList.remove("invalid");
-    letter.classList.add("valid");
-  } else {
-    letter.classList.remove("valid");
-    letter.classList.add("invalid");
-}
-
-  var upperCaseLetters = /[A-Z]/g;
-  if(myInput.value.match(upperCaseLetters)) {
-    capital.classList.remove("invalid");
-    capital.classList.add("valid");
-  } else {
-    capital.classList.remove("valid");
-    capital.classList.add("invalid");
-  }
-
-  var numbers = /[0-9]/g;
-  if(myInput.value.match(numbers)) {
-    number.classList.remove("invalid");
-    number.classList.add("valid");
-  } else {
-    number.classList.remove("valid");
-    number.classList.add("invalid");
-  }
-  if(myInput.value.length >= 8) {
-    length.classList.remove("invalid");
-    length.classList.add("valid");
-  } else {
-    length.classList.remove("valid");
-    length.classList.add("invalid");
-  }
-  
-
-  
-}
-
-
-
-
-</script>
-          </body>
-        </html>
-        
-       `
-          );
         } else {
           res.send(`
         <!DOCTYPE html>
@@ -762,7 +764,7 @@ myInput.onkeyup = function() {
         <head>
             <meta charset="UTF-8">
             <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>E-Book</title>
+            <title>Event Management</title>
         </head>
         <style>
        
@@ -1338,7 +1340,7 @@ button {
         </html>
     `);
         }
-      });
+     
   } catch (error) {
     console.log(error);
   }
@@ -1365,7 +1367,7 @@ const setPassword = async (req, res) => {
               <meta charset="utf-8" />
               <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
               <meta name="viewport" content="width=device-width, initial-scale=1">
-              <title>E_BOOK</title>
+              <title>Event Management</title>
               <link href='https://fonts.googleapis.com/css?family=Lato:300,400|Montserrat:700' rel='stylesheet' type='text/css'>
               <style>
                 @import url(//cdnjs.cloudflare.com/ajax/libs/normalize/3.0.1/normalize.min.css);
