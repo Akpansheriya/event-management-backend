@@ -26,6 +26,10 @@ age:{
         type:String,
         
     },
+    passToken:{
+        type:String,
+        
+    },
     isVerified:{
         type:Boolean
     }

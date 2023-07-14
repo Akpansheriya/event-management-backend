@@ -39,6 +39,9 @@ const ProfileStorage = multer.diskStorage({
 router.post("/signup", userRouter.signUp)
 router.get("/verify/signup", userRouter.verify)
 router.post("/signin", userRouter.signIn)
+router.post("/verifyUser", userRouter.verifyUser)
+router.get("/reset/password", userRouter.resetLink)
+router.post("/setpassword/:_id", userRouter.setPassword)
 
 
 //admin ---------------
@@ -55,4 +58,6 @@ router.put("/exitEvent/:_id", eventRouter.exitEvent)
 router.delete("/deleteEvent/:_id",eventRouter.deleteEvent)
 router.post("/excel/:adminId", eventRouter.createExcelfile)
 router.get("/getEventByAdmin/:adminId", eventRouter.getEventByAdmin)
+router.get("/getEventByUser/:userId", eventRouter.getEventByUser)
+
 module.exports = router

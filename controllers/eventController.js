@@ -145,6 +145,11 @@ const getEventByAdmin = async (req,res) => {
     res.status(200).send(list)
 }
 
+const getEventByUser = async (req,res) => {
+  const list = await event.find({ "users.userId":req.params.userId})
+  res.status(200).send(list)
+}
+
 // Call the createExcelfile function
 
 module.exports = {
@@ -154,5 +159,6 @@ module.exports = {
   exitEvent,
   deleteEvent,
   createExcelfile,
-  getEventByAdmin
+  getEventByAdmin,
+  getEventByUser
 };
